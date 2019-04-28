@@ -3,8 +3,7 @@
 
 ---
 
-## Under HEAVY development, most user-friendly features have not been 
-implemented yet so use at your own discretion
+## Under HEAVY development, most user-friendly features have not been implemented yet so use at your own discretion
 
 ---
 
