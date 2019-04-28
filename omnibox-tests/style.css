@@ -1,0 +1,131 @@
+html {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	margin: 0px;
+	padding: 0px;
+	background-color: #333;
+	display: flex;
+	justify-content: center;
+}
+
+#omnibox {
+	position: absolute;
+	bottom: 0px;
+	left: 50%;
+	margin-bottom: 100px;
+	margin-left: -333px;
+	width: 666px; /* whenever possible lol */
+	height: 120px;
+	background-color: #333;
+	z-index: 9000;
+
+}
+
+/* links */
+
+#quicklinks {
+	/* container */
+	width: 1000px;
+	height: 600px;
+	margin-top: 250px;
+}
+
+.quicklink {
+	/* individual link box */
+	width: 180px;
+	min-height: 180px;
+	float: left;
+	background-color: #CCC;
+	font-family: monospace;
+	font-size: 24px;
+	margin: 15px;
+	padding: 0px;
+}
+
+.quicklink h3 {
+	padding: 30px;
+	margin: 0px;
+	text-align: center;
+}
+
+.quicklink ul {
+	/* sublinks */
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+}
+
+.quicklink ul li {
+	width: 170px;
+	margin: 0px;
+	padding-left: 10px;
+	padding-bottom: 5px;
+}
+
+.red {
+	background-color: hsl(0, 100%,50%);
+}
+
+.orange {
+	background-color: hsl(20, 100%, 50%);
+}
+
+.yellow {
+	background-color: hsl(45, 100%, 50%);
+}
+
+.green {
+	background-color: hsl(135, 100%, 50%);
+}
+
+.selected {
+	background-color: hsl(270, 100%, 50%);
+}
+
+a {
+	color: #FFF;
+}
+
+
+/* search bar and keyCombo timer */
+
+#search {
+	width: 500px;
+	height: 100px;
+	position: absolute;
+	bottom: 0px;
+	left: 50%;
+	margin-left: -250px;
+	padding-top: 228px;
+	text-align: center;
+}
+
+#searchTerms {
+	width: inherit;
+	font-size: 36px;
+	font-family: monospace;
+	background: #454545;
+	color: #ccc;
+	border: none;
+	text-align: left;
+	padding: 10px;
+}
+
+#keyComboinfo {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+	width: 100px;
+	height: 40px;
+	margin: 10px;
+	color: #CCC;
+	font-size: 18px;
+	font-family: monospace;
+	white-space: pre-line;
+	z-index: 9001;
+}
+
