@@ -36,16 +36,39 @@ class Omnibox {
 
 		this.gui = document.createElement("div");
 		this.gui.id = "omnibox";
+		this.gui.style = "display:none";
 		document.body.appendChild(this.gui);
 
-		this.step = function() {
+		this.step = function( key ) {
+			// we bring in the pressed key to make
+			// decisions based on input
+
+
 			if (this.stepPointer == 0) {
+				// open box and iterate modules.
+				// start sorting based on input in box
+				if (this.gui.style == "display:none") {
+					this.gui.style = "display:block";
+				}
+
+				if (key.keyCode == ) { // enter
+					// module selected
+				}
+
 
 			} else if (this.stepPointer == 1) {
 
 			} else if (this.stepPointer == 2) {
 
 			}
+		}
+
+		this.moduleSearch = function(searchTerm) {
+			// return a subset of actions which contain the provided string
+			// in any of their constituent parts 
+
+
+
 		}
 
 		this.Modules = {
