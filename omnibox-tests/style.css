@@ -93,19 +93,20 @@ a {
 
 /* search bar and keyCombo timer */
 
-#search {
-	width: 500px;
-	height: 100px;
+#omnibox {
+	width: 700px;
+	height: 500px;
 	position: absolute;
-	bottom: 0px;
+	top: 50%;
 	left: 50%;
-	margin-left: -250px;
-	padding-top: 228px;
+	margin-left: -350px;
+	margin-top: -100px;
+	/* margin: 100px; */
 	text-align: center;
 }
 
-#searchTerms {
-	width: inherit;
+#omnibox input {
+	width: 480px;
 	font-size: 36px;
 	font-family: monospace;
 	background: #454545;
@@ -113,6 +114,38 @@ a {
 	border: none;
 	text-align: left;
 	padding: 10px;
+}
+
+#omniSearchResults {
+	height: 250px;
+	width: 500px;
+	margin-left: auto;
+	margin-right: auto;
+	overflow: hidden;
+	color: #aaa;
+}
+
+.searchResult {
+	width: 499px;
+	font-family: monospace;
+	text-align: left;
+	padding-left: 15px;
+	padding-top: 2px;
+	margin-bottom: 5px;
+	border-bottom: 1px dotted #666;
+}
+
+.searchResult .selected {
+	border-bottom: 1px dotted rgb(11, 209, 183);
+	border-left: 10px solid rgb(11, 209, 183);
+}
+
+.searchResult h1 {
+	font-size: 16px;
+}
+
+.searchResult p {
+	font-size: 12px;
 }
 
 #keyComboinfo {

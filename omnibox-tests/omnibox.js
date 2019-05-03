@@ -43,6 +43,7 @@ class Omnibox {
 		this.stepPointer = this.STEP_POP_BOX;
 		this.modulePointer;
 		this.userInputString = new UserInputString();
+		this.modResults;
 
 		// Build GUI 
 		this.guiParentDiv = document.createElement("div");
@@ -59,8 +60,6 @@ class Omnibox {
 
 		this.loop = function(key = this.KEY_IMAGINARY) {
 
-			var modResults;
-
 			if (this.stepPointer == this.STEP_POP_BOX) {
 				if (key.keyCode == this.KEY_SPACE) {
 					// open box and advance state
@@ -68,6 +67,7 @@ class Omnibox {
 						key = this.KEY_IMAGINARY;
 						this.boxState = this.BOX_OPEN;
 						this.guiParentDiv.setAttribute("style", "display: block;");
+						this.guiInput.focus();
 						this.stepPointer = this.STEP_ITERATE_MODULES;
 					} else {
 						this.boxState = this.BOX_CLOSED;
@@ -83,50 +83,53 @@ class Omnibox {
 
 				// Omnibox open, pass user input into keybuffer
 				var keyResult = this.userInputString.keyDown(key);
-				var keyCode = keyResult[0].key;
+				var keyCode = keyResult[0].keyCode;
 				var inputBuffer = keyResult[1];
 
-				// take action based on key 
+				// do something meaningful w user input
 				if (keyCode == this.KEY_ENTER) {
 					// module selected
 					this.stepPointer = this.STEP_ITERATE_ACTION;
 				} else if (keyCode == this.KEY_ARROW_UP) {
-					modResults = this.moduleScroll(modResults, this.KEY_ARROW_UP);
+					console.log(this.modResults);
+					this.modResults = this.moduleScroll(this.modResults, this.KEY_ARROW_UP);
 				} else if (keyCode == this.KEY_ARROW_DOWN) {
-					modResults = this.moduleScroll(modResults, this.KEY_ARROW_DOWN);
+					this.modResults = this.moduleScroll(this.modResults, this.KEY_ARROW_DOWN);
 				} else {
 					// either searching a term or for a module.
 
 					// gui reflects state of inputBuffer
 					this.guiInput.value = inputBuffer;
-					modResults = this.moduleSearch(inputBuffer);
-
-					// remove old results, if any
-					for (var x = this.searchResultArea.children.length - 1; x >= 0; x--) {
-						this.searchResultArea.removeChild(this.searchResultArea.children[x]);
-					}
-
-					// draw new results
-					modResults.forEach(element => {
-						var sr = document.createElement("div");
-						sr.class = "searchResult";
-
-						var title = document.createElement("h1");
-						title.innerHTML = element.title;
-
-						var desc = document.createElement("p");
-						desc.innerHTML = element.shortDesc;
-
-						sr.appendChild(title);
-						sr.appendChild(desc);
-						this.searchResultArea.appendChild(sr);
-					});
+					this.modResults = this.moduleSearch(inputBuffer);
 				}
+
+				// Draw module selector
+				// remove old results, if any
+				for (var x = this.searchResultArea.children.length - 1; x >= 0; x--) {
+					this.searchResultArea.removeChild(this.searchResultArea.children[x]);
+				}
+
+				// draw new results
+				this.modResults.forEach(element => {
+					var sr = document.createElement("div");
+					sr.setAttribute("class", "searchResult");
+
+					var title = document.createElement("h1");
+					title.innerHTML = element.title;
+
+					var desc = document.createElement("p");
+					desc.innerHTML = element.shortDesc;
+
+					sr.appendChild(title);
+					sr.appendChild(desc);
+					this.searchResultArea.appendChild(sr);
+				});
 			}
 
 			// Debugging info reflects final state
 			console.log("State", this.stepPointer);
-			console.log("Input Buffer", "\"" + this.userInputString.getBuffer() + "\"");
+			console.log("Input Buffer", this.userInputString.getBuffer().length, "\"" + this.userInputString.getBuffer() + "\"");
+			console.log("Results", this.modResults);
 
 		}
 
@@ -174,18 +177,21 @@ class Omnibox {
 			return modResults;
 		}
 
-		this.moduleScroll = function (modules, direction) {
-			// transform a list and return it
-			var modCopy = modules.slice();
+		this.moduleScroll = function (modList, direction) {
+			// transform a list
+
+			var modCopy = modList.slice();
 
 			if (direction == this.KEY_ARROW_UP) {
-				// take last member of list and add it to the top
-				var last = modCopy.pop();
-				modCopy.unshift(last);
-			} else {
 				// take top member of list and add it to bottom
 				var first = modCopy.shift();
 				modCopy.push(first);
+
+			} else {
+				// take last member of list and add it to the top
+				var last = modCopy.pop();
+				modCopy.unshift(last);
+
 			}
 
 			return modCopy;
