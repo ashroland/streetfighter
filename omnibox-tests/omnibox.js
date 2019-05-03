@@ -6,28 +6,48 @@ sublimetextlike menu for all user functions
 many search engines
 tooled for extensibility
 
+
+TO-DO:
+
+default action - selected until moving through options
+up/down action cycles through modules
+devise a search method which actually works lol
+
+
 */
+
+
+
 class Omnibox {
 
-	constructor() {
+	constructor(modules) {
+		this.Modules = modules;
+
 		// 'constants' for legibility 
-		this.StepPopBox = 0;
-		this.StepIterateModules = 1;
-		this.StepIterateAction = 2;
-		this.StepModuleSuccess = 1000;
-		this.ENTER = 13;
-		this.ARROW_UP = 38;
-		this.ARROW_DOWN = 40;
-		this.SPACE = 32;
+		this.BOX_CLOSED = 0;
+		this.BOX_OPEN = 1;
+
+		this.STEP_POP_BOX = 0;
+		this.STEP_ITERATE_MODULES = 1;
+		this.STEP_ITERATE_ACTION = 2;
+		this.STEP_MODULE_SUCCESS = 1000;
+
+		this.KEY_ENTER = 13;
+		this.KEY_ARROW_UP = 38;
+		this.KEY_ARROW_DOWN = 40;
+		this.KEY_SPACE = 32;
+		this.KEY_IMAGINARY = 9001;
 
 		// Internal pointers to keep state
-		this.stepPointer = this.StepPopBox;
+		this.boxState = this.BOX_CLOSED;
+		this.stepPointer = this.STEP_POP_BOX;
 		this.modulePointer;
+		this.userInputString = new UserInputString();
 
 		// Build GUI 
 		this.guiParentDiv = document.createElement("div");
 		this.guiParentDiv.id = "omnibox";
-		this.guiParentDiv.style = "display:none";
+		this.guiParentDiv.style = "display: none";
 		this.guiInput = document.createElement("input");
 		this.guiInput.id = "omniInput";
 		this.searchResultArea = document.createElement("div");
@@ -37,56 +57,57 @@ class Omnibox {
 		this.guiParentDiv.appendChild(this.searchResultArea);
 		document.body.appendChild(this.guiParentDiv);
 
-		this.loop = function (key) {
+		this.loop = function(key = this.KEY_IMAGINARY) {
 
-			this.keyCode = key;
-			this.modResults;
+			var modResults;
 
-			console.log("State", this.stepPointer);
-
-			if (this.stepPointer == this.StepPopBox) {
-
-				if (this.keyCode == this.SPACE) {
-					// open box and iterate modules.
-					// start sorting based on input in box
-					if (this.guiParentDiv.getAttribute("style") == "display:none") {
-						this.guiParentDiv.setAttribute("style", "display:block");
-						this.guiInput.focus();
-						this.stepPointer = this.StepIterateModules;
-						this.loop(this.keyCode);
+			if (this.stepPointer == this.STEP_POP_BOX) {
+				if (key.keyCode == this.KEY_SPACE) {
+					// open box and advance state
+					if (this.boxState == this.BOX_CLOSED) {
+						key = this.KEY_IMAGINARY;
+						this.boxState = this.BOX_OPEN;
+						this.guiParentDiv.setAttribute("style", "display: block;");
+						this.stepPointer = this.STEP_ITERATE_MODULES;
 					} else {
-						this.guiParentDiv.setAttribute("style", "display:none");
-						this.stepPointer = this.StepPopBox;
+						this.boxState = this.BOX_CLOSED;
+						this.guiParentDiv.setAttribute("style", "display: none;");
+						this.stepPointer = this.STEP_POP_BOX;
 					}
 				}
+			}
 
-			} else if (this.stepPointer == this.StepIterateModules) {
+			if (this.stepPointer == this.STEP_ITERATE_MODULES) {
 				// user is either searching a term (default behavior) 
 				// or looking for a module to use
 
+				// Omnibox open, pass user input into keybuffer
+				var keyResult = this.userInputString.keyDown(key);
+				var keyCode = keyResult[0].key;
+				var inputBuffer = keyResult[1];
+
 				// take action based on key 
-				if (this.keyCode == this.ENTER) {
+				if (keyCode == this.KEY_ENTER) {
 					// module selected
-					this.stepPointer = this.StepIterateAction;
-				} else if (this.keyCode == this.ARROW_UP) {
-					this.moduleScroll(this.modResults, this.ARROW_UP);
-				} else if (this.keyCode == this.ARROW_DOWN) {
-					this.moduleScroll(this.modResults, this.ARROW_DOWN);
+					this.stepPointer = this.STEP_ITERATE_ACTION;
+				} else if (keyCode == this.KEY_ARROW_UP) {
+					modResults = this.moduleScroll(modResults, this.KEY_ARROW_UP);
+				} else if (keyCode == this.KEY_ARROW_DOWN) {
+					modResults = this.moduleScroll(modResults, this.KEY_ARROW_DOWN);
 				} else {
-					console.log("key", this.keyCode);
+					// either searching a term or for a module.
 
-					// either searching a term or for a module
-					var val = this.guiInput.value;
-					console.log("val", "\"" + val + "\"", val.length);
-					this.modResults = this.moduleSearch(val);
-					console.log(this.modResults);
+					// gui reflects state of inputBuffer
+					this.guiInput.value = inputBuffer;
+					modResults = this.moduleSearch(inputBuffer);
 
-					// show results
-					for (var x = 0; x < this.searchResultArea.children.length; x++) {
+					// remove old results, if any
+					for (var x = this.searchResultArea.children.length - 1; x >= 0; x--) {
 						this.searchResultArea.removeChild(this.searchResultArea.children[x]);
 					}
 
-					this.modResults.forEach(element => {
+					// draw new results
+					modResults.forEach(element => {
 						var sr = document.createElement("div");
 						sr.class = "searchResult";
 
@@ -101,11 +122,14 @@ class Omnibox {
 						this.searchResultArea.appendChild(sr);
 					});
 				}
-			} else if (this.stepPointer == this.StepIterateAction) {
-				// action selected, step through its behavior
-				// 
 			}
+
+			// Debugging info reflects final state
+			console.log("State", this.stepPointer);
+			console.log("Input Buffer", "\"" + this.userInputString.getBuffer() + "\"");
+
 		}
+
 
 		this.moduleSearch = function (searchTerm) {
 			// return a subset of actions which contain the provided string
@@ -126,12 +150,8 @@ class Omnibox {
 					for (var actionKey in mod[key]["Actions"]) {
 						if (mod[key]["Actions"].hasOwnProperty(actionKey)) {
 							// check title and description for search term
-							let title = mod[key]["Actions"][actionKey]["title"];
-							let shortDesc = mod[key]["Actions"][actionKey]["shortDesc"];
-
-							// in python we'd do: 
-							// if searchTerm is in title or if searchTerm is in shortDesc:
-
+							var title = mod[key]["Actions"][actionKey]["title"];
+							var shortDesc = mod[key]["Actions"][actionKey]["shortDesc"];
 							var titleResult = title.indexOf(searchTerm);
 							var descResult = shortDesc.indexOf(searchTerm);
 
@@ -158,102 +178,17 @@ class Omnibox {
 			// transform a list and return it
 			var modCopy = modules.slice();
 
-			if (direction == this.ARROW_UP) {
+			if (direction == this.KEY_ARROW_UP) {
 				// take last member of list and add it to the top
-				var last = modCopy.pop(modCopy.length - 1);
-				modCopy.push(last, 0);
+				var last = modCopy.pop();
+				modCopy.unshift(last);
 			} else {
 				// take top member of list and add it to bottom
-				var first = modCopy.pop(0);
-				modCopy.push(first, modCopy.length - 1);
+				var first = modCopy.shift();
+				modCopy.push(first);
 			}
 
 			return modCopy;
 		}
-
-		this.Modules = {
-			"Links": {
-
-				"Actions": {
-
-					"makeLink": {
-						"title": "Make Link",
-						"shortDesc": "Add a link to homepage",
-						"behavior": [ // a sorted list walking through all steps of action
-							function () {
-								// ask for title
-							},
-							function () {
-								// ask for href
-							},
-							function () {
-								// ask for hotkey, assume coherent default
-							},
-							function () {
-								// return something to show that we're done?? idk
-								return OmniBox.ModuleSuccess;
-							}
-						]
-					},
-
-					"removeLink": {
-						"title": "Remove Link",
-						"shortDesc": "Remove a link from a category",
-						"behavior": [ // a sorted list walking through all steps of action
-							function () {
-								// ask for title
-							},
-							function () {
-								// ask for href
-							},
-							function () {
-								// ask for hotkey, assume coherent default
-							},
-							function () {
-								// return something to show that we're done?? idk
-								return OmniBox.ModuleSuccess;
-							}
-						]
-					},
-					"addCategory": {
-						"title": "Make Category",
-						"shortDesc": "Add a category to homepage",
-						"behavior": [ // a sorted list walking through all steps of action
-							function () {
-								// ask for title
-							},
-							function () {
-								// ask for href
-							},
-							function () {
-								// ask for hotkey, assume coherent default
-							},
-							function () {
-								// return something to show that we're done?? idk
-								return OmniBox.ModuleSuccess;
-							}
-						]
-					},
-				}
-			},
-
-			//etc.
-		};
 	}
-}
-
-
-var ob;
-
-function init() {
-
-	ob = new Omnibox();
-	ob.loop();
-
-}
-
-window.onkeydown = function (event) {
-	var key = event.keyCode;
-	// console.log(event);
-	ob.loop(key);
 }
