@@ -7,6 +7,12 @@ class UserInputString {
 	of string buffer.
 
 	TO-DO:
+
+	BETTER META SCRUBBING
+		still catches F-Keys and some meta keys on Linux
+		sleuth out those keycodes and add them to black list
+
+
 	implement cursor position and provide cursor, somehow
 
 	*/
@@ -24,7 +30,7 @@ class UserInputString {
 
 			var kc = keyEvent.keyCode;
 			var key = keyEvent.key;
-			var ignoreKeys = [9, 13, 16, 17, 145, 19, 45, 36, 33, 46, 35, 34, 37, 38, 39, 40];
+			var keyBlackList = [9, 13, 16, 17, 145, 19, 45, 36, 33, 46, 35, 34, 37, 38, 39, 40];
 
 			switch (kc) {
 				case 8: // backspace
@@ -32,7 +38,7 @@ class UserInputString {
 					break;
 				default:
 					// exclude special function keys from stringbuffer
-					if (ignoreKeys.indexOf(kc) == -1) {
+					if (keyBlackList.indexOf(kc) == -1) {
 						this.inputString += key;
 					}
 					break;

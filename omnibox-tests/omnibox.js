@@ -91,7 +91,6 @@ class Omnibox {
 					// module selected
 					this.stepPointer = this.STEP_ITERATE_ACTION;
 				} else if (keyCode == this.KEY_ARROW_UP) {
-					console.log(this.modResults);
 					this.modResults = this.moduleScroll(this.modResults, this.KEY_ARROW_UP);
 				} else if (keyCode == this.KEY_ARROW_DOWN) {
 					this.modResults = this.moduleScroll(this.modResults, this.KEY_ARROW_DOWN);
@@ -138,7 +137,7 @@ class Omnibox {
 			// return a subset of actions which contain the provided string
 			// in any of their constituent parts 
 
-			let modResults = [];
+			var modResults = [];
 
 			// return nothing if searchTerm is empty
 			if (searchTerm.length == 0) {
@@ -146,26 +145,28 @@ class Omnibox {
 			}
 
 			// iterate all modules and their actions
-			let mod = this.Modules;
+			var mod = this.Modules;
 
-			for (var key in mod) {
+			for (var key in mod) { 
 				if (mod.hasOwnProperty(key)) {
 					for (var actionKey in mod[key]["Actions"]) {
 						if (mod[key]["Actions"].hasOwnProperty(actionKey)) {
 							// check title and description for search term
-							var title = mod[key]["Actions"][actionKey]["title"];
-							var shortDesc = mod[key]["Actions"][actionKey]["shortDesc"];
-							var titleResult = title.indexOf(searchTerm);
-							var descResult = shortDesc.indexOf(searchTerm);
+							var title = mod[key]["Actions"][actionKey]["title"].toLowerCase();
+							var shortDesc = mod[key]["Actions"][actionKey]["shortDesc"].toLowerCase();
+							var titleResult = title.indexOf(searchTerm.toLowerCase());
+							var descResult = shortDesc.indexOf(searchTerm.toLowerCase());
 
-							if (titleResult != -1 || descResult != 1) {
-								// if we find our search text in either the title or description
-								// of the module, add it to the results.
+							// if we find our search text in either the title or description
+							// of the module, add it to the results.
+							var notInList = -1; //for legibility
+							var inEither = titleResult != notInList || descResult != notInList;
+
+							if (inEither) {
 								var mr = mod[key]["Actions"][actionKey];
 
 								// avoid duplicates
 								if (modResults.indexOf(mr) == -1) {
-
 									// add module to results
 									modResults.push(mr);
 								}

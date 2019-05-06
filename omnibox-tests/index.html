@@ -8,7 +8,6 @@
 	<script language="javascript" src="userinputstring.js"></script>
 	<script language="javascript" src="actions.js"></script>
 	<script language="javascript" src="omnibox.js"></script>
-
 	<script language="javascript">
 		var ob;
 
@@ -16,9 +15,9 @@
 			ob = new Omnibox(sfModules);
 			ob.loop();
 
-			window.onkeydown = function (event) {
-				ob.loop(event);
-				event.preventDefault();
+			window.onkeydown = function (keyEvent) {
+				ob.loop(keyEvent);
+				keyEvent.preventDefault();
 			}
 		}
 
