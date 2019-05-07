@@ -9,9 +9,12 @@ tooled for extensibility
 
 TO-DO:
 
+default links for new user
+
 default action - selected until moving through options
-up/down action cycles through modules
-devise a search method which actually works lol
+	build out gui component 
+
+	
 
 
 */
@@ -41,7 +44,10 @@ class Omnibox {
 		// Internal pointers to keep state
 		this.boxState = this.BOX_CLOSED;
 		this.stepPointer = this.STEP_POP_BOX;
-		this.modulePointer;
+		this.modulePointer = 0; // which step of the module are we on
+		this.moduleStepDone = false; // have we finished everything on module step
+
+		// 
 		this.userInputString = new UserInputString();
 		this.modResults;
 
@@ -49,11 +55,18 @@ class Omnibox {
 		this.guiParentDiv = document.createElement("div");
 		this.guiParentDiv.id = "omnibox";
 		this.guiParentDiv.style = "display: none";
+
+		this.guiBreadcrumb = document.createElement("div");
+		this.guiBreadcrumb.id = "breadcrumb";
+
 		this.guiInput = document.createElement("input");
 		this.guiInput.id = "omniInput";
+		
 		this.searchResultArea = document.createElement("div");
 		this.searchResultArea.id = "omniSearchResults";
 
+		// Create DOM elements
+		this.guiParentDiv.appendChild(this.guiBreadcrumb);
 		this.guiParentDiv.appendChild(this.guiInput);
 		this.guiParentDiv.appendChild(this.searchResultArea);
 		document.body.appendChild(this.guiParentDiv);
@@ -102,6 +115,15 @@ class Omnibox {
 					this.modResults = this.moduleSearch(inputBuffer);
 				}
 
+				// stick default action at front of list
+				
+				this.modResults.unshift(
+					// TO-DO:
+					// once user prefs implemented, pull default action from prefs
+					// for now, default to google search	
+					this.Modules["Search"]["google"]
+				);
+
 				// Draw module selector
 				// remove old results, if any
 				for (var x = this.searchResultArea.children.length - 1; x >= 0; x--) {
@@ -109,7 +131,14 @@ class Omnibox {
 				}
 
 				// draw new results
-				this.modResults.forEach(element => {
+
+				// result 0 is our selected module,
+				// draw in breadcrumb area
+				this.guiBreadcrumb.innerHTML = this.modResults[0].title;
+
+				// make subset of modresults less 0th element
+				var subSetResults = this.modResults.splice(1, this.modResults.length);
+				subSetResults.forEach(element => {
 					var sr = document.createElement("div");
 					sr.setAttribute("class", "searchResult");
 
@@ -123,6 +152,24 @@ class Omnibox {
 					sr.appendChild(desc);
 					this.searchResultArea.appendChild(sr);
 				});
+			}
+
+			if (this.stepPointer == this.STEP_ITERATE_ACTION) {
+				// selected module always 0th item
+				var mod = this.modResults[0];
+
+				// progress when we have a success
+				if (this.moduleStepDone == true) this.modulePointer += 1;
+
+				if (this.modulePointer < mod.behavior.length) {
+					// pass stringbuffer and stepdone supervisor into selected module
+					mod.behavior[this.modulePointer]( this.userInputString, this.moduleStepDone);
+				} else {
+					// we have performed an action, 
+					// reset all counters to closed state
+					// and flush stringbuffer
+				}
+				
 			}
 
 			// Debugging info reflects final state
@@ -149,11 +196,12 @@ class Omnibox {
 
 			for (var key in mod) { 
 				if (mod.hasOwnProperty(key)) {
-					for (var actionKey in mod[key]["Actions"]) {
-						if (mod[key]["Actions"].hasOwnProperty(actionKey)) {
+					for (var actionKey in mod[key]) {
+						console.log(actionKey);
+						if (mod[key].hasOwnProperty(actionKey)) {
 							// check title and description for search term
-							var title = mod[key]["Actions"][actionKey]["title"].toLowerCase();
-							var shortDesc = mod[key]["Actions"][actionKey]["shortDesc"].toLowerCase();
+							var title = mod[key][actionKey]["title"].toLowerCase();
+							var shortDesc = mod[key][actionKey]["shortDesc"].toLowerCase();
 							var titleResult = title.indexOf(searchTerm.toLowerCase());
 							var descResult = shortDesc.indexOf(searchTerm.toLowerCase());
 
@@ -163,7 +211,7 @@ class Omnibox {
 							var inEither = titleResult != notInList || descResult != notInList;
 
 							if (inEither) {
-								var mr = mod[key]["Actions"][actionKey];
+								var mr = mod[key][actionKey];
 
 								// avoid duplicates
 								if (modResults.indexOf(mr) == -1) {
