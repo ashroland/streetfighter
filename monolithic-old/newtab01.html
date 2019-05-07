@@ -1,0 +1,528 @@
+<!-- 
+
+
+To-do:
+
+SPRINT X ------------------------------------------------------------------
+
+github repository, name
+
+
+
+SPRINT 1 ------------------------------------------------------------------
+
+implement data structure by keystroke for quicker
+domain search and user-defined hierarchies. 
+
+a) Nested links for better keystroke kung-fu
+	ie.
+	(w)ebcomics
+		- (q)uestionable content
+		- (x)kcd
+
+	'wx' -> xkcd.com
+
+b) Reminder system to back up links
+
+
+
+hypothetical key structure -----------
+
+[ // ordered list of dicts
+
+	{
+		"displayname":"google",
+		"href":"https://google.com",
+		"keycombo":"g",
+		"islist":false,
+		"color", etc.
+	}
+
+// and dicts with ordered list of dicts for nested links
+	{
+		"displayname":"social",
+		"islist":true,
+		"list":
+			[
+				{
+					"displayname":"facebook", etc.
+				}
+			]
+	}
+]
+
+
+pseudocode ---------------------------
+
+RENDER
+
+
+
+
+TRAVERSE
+
+
+
+SPRINT 2 ------------------------------------------------------------------
+
+HTML5 Web Storage
+	all Links stored as objects on users' computer
+	load / save function 
+	interface for making / removing / ordering links
+		keystrokes for these
+
+
+	"Web Storage simply provides a key-value mapping, e.g. localStorage["name"] = username;. 
+	Unfortunately, present implementations only support string-to-string mappings, 
+	so you need to serialise and de-serialise other data structures. 
+	You can do so using JSON.stringify() and JSON.parse()."
+
+
+
+
+
+SPRINT 3 ------------------------------------------------------------------
+
+Link highlighting with keystrokes. Grey out options
+as they become invalidated, or move 'cursor' to selection
+
+user-defined color palettes
+
+sensible default hi-contrast color palettes
+
+user-defined disable street-fighter mode
+
+
+
+
+SPRINT 4 ------------------------------------------------------------------
+
+"Omnibox" 
+	sublimetextlike menu for all user functions
+	many search engines
+
+
+
+
+WOULD-BE-NICEs ------------------------------------------------------------
+
+link 'types', specifically for jumping to inboxes
+
+	gmail inbox per user url:
+		https://mail.google.com/mail/u/?authuser=YOUR_EMAIL@gmail.com
+
+		definitely hold off on this until html5 storage implemented for opsec reasons
+
+	implement many webmail features, ie., jump to new message
+
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>new tab...</title>
+		<style type="text/css">
+			html {
+				width: 100%;
+				height: 100%;
+			}
+
+			body {
+				margin: 0px;
+				padding: 0px;
+				background-color: #333;
+				display: flex;
+				justify-content: center;
+			}
+
+			#quicklinks {
+				width: 1000px;
+				height: 600px;
+				margin-top: 250px;
+			}
+
+			.quicklink {
+				width: 136px;
+				height: 180px;
+				padding: 15px;
+				margin: 15px;
+				float: left;
+				background-color: #CCC;
+				font-family: monospace;
+				font-size: 24px;
+				display: flex;
+				justify-content: center;
+				align-items: flex-end;
+			}
+
+			.quicklink div { 
+				/* sublinks */
+				width: 100%;
+				float: left;
+				clear: left;
+				height: 24px;
+				font-size: 18px;
+				font-family: monospace;
+				margin: 0px;
+				padding: 3px;
+			}
+
+			.red {
+				background-color: hsl(0, 100%,50%);
+			}
+
+			.orange {
+				background-color: hsl(20, 100%, 50%);
+			}
+
+			.yellow {
+				background-color: hsl(45, 100%, 50%);
+			}
+
+			.green {
+				background-color: hsl(135, 100%, 50%);
+			}
+
+			.purple {
+				background-color: hsl(270, 100%, 50%);
+			}
+
+			a {
+				color: #FFF;
+			}
+
+			#search {
+				width: 500px;
+				height: 100px;
+				position: absolute;
+				bottom: 0px;
+				left: 50%;
+				margin-left: -250px;
+				padding-top: 228px;
+				text-align: center;
+			}
+
+			#searchTerms {
+				width: inherit;
+				font-size: 36px;
+				font-family: monospace;
+				background: #454545;
+				color: #ccc;
+				border: none;
+				text-align: left;
+				padding: 10px;
+			}
+
+			#keycomboinfo {
+				position: absolute;
+				bottom: 0px;
+				right: 0px;
+				width: 100px;
+				height: 40px;
+				margin: 10px;
+				color: #CCC;
+				font-size: 18px;
+				font-family: monospace;
+				white-space: pre-line;
+				z-index: 9001;
+			}
+
+		</style>
+		<script language="javascript">
+
+			var keyTimer = null;
+			var keyTimerCount = 0;
+			var keyTimerLength = 125;
+			var keyTimerOn = false;
+			var keyCombo = "";
+
+
+			var links = [ // ordered list of dicts
+
+				{
+					"displayname":"twitter",
+					"href":"https://twitter.com",
+					"keycombo":"t",
+					"islist":false
+				},
+				{
+					"displayname":"youtube",
+					"href":"https://youtube.com",
+					"keycombo":"y",
+					"islist":false
+				},
+				{
+					"displayname":"gmail",
+					"href":"https://gmail.com",
+					"keycombo":"g",
+					"islist":false
+				},
+						{
+				"displayname":"retail",
+				"islist":true,
+				"keycombo":"r",
+				"list":
+					[
+						{
+							"displayname":"amazon",
+							"href":"https://amazon.com",
+							"keycombo":"a",
+							"islist":false
+						},
+						{
+							"displayname":"ebay",
+							"href":"https://ebay.com",
+							"keycombo":"e",
+							"islist":false
+						},
+					]
+				},
+				{
+					"displayname":"slfcu",
+					"href":"https://slfcu.org",
+					"keycombo":"s",
+					"islist":false
+				},
+				{
+					"displayname":"users",
+					"href":"https://xxyle.computer/users",
+					"keycombo":"u",
+					"islist":false
+				},
+				{
+					"displayname":"twitter",
+					"href":"https://twitter.com",
+					"keycombo":"t",
+					"islist":false
+				},
+			]
+
+			function renderLinks() {
+
+				for (var x = 0; x < links.length; x++){ 
+					var linkobj = links[x];
+
+					if (links[x]["islist"] == true) {
+						var d = document.createElement("div");
+						d.id = "link_" + linkobj["displayname"];
+						d.setAttribute("keycombo", linkobj["keycombo"]);
+						d.setAttribute("class", "quicklink");
+
+						var h3 = document.createElement("h3");
+						h3.innerHTML = linkobj["displayname"];
+						d.appendChild(h3);
+
+						for (var y = 0; y < links[x]["list"].length; y++){
+							var sublinkobj = links[x]["list"][y];
+
+							// # build container
+							var a = document.createElement("a");
+							a.href = sublinkobj.href;
+							a.setAttribute("keycombo", sublinkobj["keycombo"]);
+							
+							// # build subcontainer div
+							subd = document.createElement("div")
+							subd.id = "link_" + sublinkobj["displayname"] + "_" + sublinkobj["displayname"];
+							subd.keycombo = sublinkobj["keycombo"];
+							subd.innerHTML = sublinkobj["displayname"];
+							
+							a.appendChild(subd);
+							d.appendChild(a);
+
+							
+						}
+						document.getElementById("quicklinks").appendChild(d);
+						
+					} else {
+						var a = document.createElement("a");
+						a.href = links[x].href;
+						a.setAttribute("keycombo", links[x].keycombo);
+
+						// # build container div 
+						var d = document.createElement("div");
+						d.id = "link_" + linkobj["displayname"];
+						d.setAttribute("class","quicklink");
+
+						var h3 = document.createElement("h3");
+						h3.innerHTML = linkobj["displayname"];
+						d.appendChild(h3);
+
+						a.appendChild(d);
+						document.getElementById("quicklinks").appendChild(a);
+					}
+				}
+			}
+
+			window.onkeypress = function(e) {
+
+				key = e.code.toLowerCase();
+
+				if (key == "space") {
+					if (e.ctrlKey == true) {
+						//unpop search bar
+						barCtl("unpop");
+					} else {
+						//pop up search bar
+						if (!barVisible())
+							e.preventDefault()
+							barCtl("popbar");			
+					}
+				}
+				else if (key == "enter") {
+					barCtl("search");
+				} else {
+					// capture key combos
+					if (!barVisible()) {// only capture if search bar not open
+
+						keyCombo += e.key.toLowerCase();
+
+						if (keyTimerOn) {
+							// multiple keypresses, reset timer to full
+							keyTimerCount = keyTimerLength;
+							if (e.key == ";") { // cancel current operation
+								clearTimer();
+							}
+						}
+						else {
+							keyTimerOn = true;
+							keyTimerCount = keyTimerLength;
+							barCtl("popbar","keycomboinfo");
+							keyTimer = setInterval(function(){
+								keyTimerCount -=1;
+
+								kci = document.getElementById("keycomboinfo");
+								kci.innerHTML = keyCombo;
+								kci.innerHTML += "\t\t";
+								kci.innerHTML += prettyNumbers(keyTimerCount);
+
+
+								if (keyTimerCount <= 0) {
+									clearTimer("changepage");
+								}
+							}, 1);
+						}
+					}
+				}
+			}
+
+			function clearTimer(result_="clearTimer") {
+				clearInterval(keyTimer);
+				keyTimerOn = false;
+				keyTimerCount = 0;
+				barCtl("unpop","keycomboinfo");
+
+				if (result_="changepage") {
+					changePageWithKeyCombo( keyCombo );
+				}
+				keyCombo = "";
+			}
+
+			function changePageWithKeyCombo( kc_ ) {
+				listOfLinks = document.getElementsByTagName("a");
+				for (var x = 0; x < listOfLinks.length; x++) {
+					if (listOfLinks[x].getAttribute("keycombo") == kc_) {
+						window.location = listOfLinks[x].href;
+					}
+				}
+			}
+
+			function barCtl( action_, element_="search" ) {
+
+				searchBox = document.getElementById(element_);
+				searchBoxIsVisible = (searchBox.getAttribute("style") == 'visibility:visible');
+				searchTerms = document.getElementById("searchTerms");
+				
+				if ( action_ == "popbar") {
+					if (!searchBoxIsVisible) {
+						searchBox.setAttribute("style", "visibility:visible");
+						searchTerms.focus();
+					}
+				}
+				else if ( action_ == "unpop") {
+					searchBox.setAttribute("style", "visibility:hidden");
+					searchTerms.value = "";
+				}
+				else if ( action_ == "search") {
+					if (searchBoxIsVisible) {
+						//search box open
+						window.location = "https://next.duckduckgo.com/?q=" + searchTerms.value; 
+					}	
+				}
+
+			}
+
+			function barVisible() {
+				// true if open, else false
+				searchBox = document.getElementById("search");
+				searchBoxIsVisible = (searchBox.getAttribute("style") == 'visibility:visible');
+				return searchBoxIsVisible;
+			}
+
+			function updateQuicklinks() {
+				// list for unique rep texts
+				rtexts = [];
+
+				// list of lists to store texts next to relevant items
+				qlTexts = [];
+
+				// grab all quicklinks
+				var ql = document.getElementsByTagName("a");
+				for (var i = 0; i < ql.length; i++) {
+					//get div
+					qldiv = ql[i].children[0];
+
+					//representative text should be innerHTML
+					rtext = qldiv.innerHTML.split("");
+
+					outtext = "";
+					for (var x = 0; x < rtext.length; x++) {
+						outtext += rtext[x];
+						if (rtexts.indexOf(outtext) == -1) {
+							break;
+						}
+					}
+					rtexts.push(outtext);
+					qlTexts.push([ql[i], qldiv, outtext])
+				}
+
+
+				for (var i = 0; i < qlTexts.length; i++) {
+					a = qlTexts[i][0];
+					div = qlTexts[i][1];
+					newname = qlTexts[i][2];
+					origname = div.innerHTML;
+
+
+					tempname = origname.substr(newname.length,origname.length);
+					tempname = "(" + newname + ")" + tempname;
+					div.innerHTML = tempname;
+
+					a.setAttribute("keycombo", newname);
+
+				}
+
+			}
+
+			function prettyNumbers( num_ ) {
+				strNum = String(num_);
+				len = strNum.length;
+				diff = 4 - len;
+				for (var x = 0; x < diff; x++) {
+					strNum = "0" + strNum;
+				}
+				return strNum;
+			}
+
+			function init() {
+				renderLinks();
+				// updateQuicklinks();
+			}
+
+		</script>
+	</head>
+	<body onload="init()">
+		<div id="quicklinks"></div>
+		<div id="search" style="visibility:hidden"><input id="searchTerms" /></div>
+		<div id="keycomboinfo" style="visibility:hidden"></div>
+	</body>
+</html>

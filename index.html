@@ -1,69 +1,38 @@
-<!-- 
-
-
-To-do:
-
-Default links for new visitor
-More apparent keystroke highlighting
-
-HTML5 Web Storage
-	X all Links stored as objects on users' computer
-	X load / save function 
-	X interface for making / removing / ordering links
-		keystrokes for these -- HOLD FOR OMNIBOX
-	Save to File
-	Load from File
-	Reminder system to back up links
-
-"Omnibox" 
-	sublimetextlike menu for all user functions
-	many search engines
-
-
-
-SPRINT 3 ------------------------------------------------------------------
-
-User Prefs
-
-	user-defined color palettes
-
-	sensible default hi-contrast color palettes
-
-	user-defined disable street-fighter mode
-
-
-
-
-SPRINT 4 ------------------------------------------------------------------
-
-
-
-
-
-WOULD-BE-NICEs ------------------------------------------------------------
-
-link 'types', specifically for jumping to inboxes
-
-	gmail inbox per user url:
-		https://mail.google.com/mail/u/?authuser=YOUR_EMAIL@gmail.com
-
-		definitely hold off on this until html5 storage implemented for opsec reasons
-
-	implement many webmail features, ie., jump to new message
-
--->
-
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<title>new tab...</title>
-		<link rel="stylesheet" href="style.css" />
-		<script language="javascript" src="monolith.js"></script>
-		<!-- <script language="javascript" src="omnibox.js"></script> -->
-	</head>
-	<body onload="init()">
-		<div id="quicklinks"></div>
-		<div id="search" style="visibility:hidden"><input id="searchTerms" /></div>
-		<div id="keyComboinfo" style="visibility:hidden"></div>
-	</body>
+
+<head>
+	<meta charset="utf-8" />
+	<title>streetfighter</title>
+	<link href="https://fonts.googleapis.com/css?family=Aguafina+Script" rel="stylesheet"> 
+	<link rel="stylesheet" href="style.css" />
+	<script language="javascript" src="userinputstring.js"></script>
+	<script language="javascript" src="actions.js"></script>
+	<script language="javascript" src="omnibox.js"></script>
+	<script language="javascript">
+		var ob;
+
+		function init() {
+			ob = new Omnibox(sfModules);
+			ob.loop();
+
+			window.onkeydown = function (keyEvent) {
+				ob.loop(keyEvent);
+				keyEvent.preventDefault();
+			}
+		}
+
+	</script>
+</head>
+
+<body onload="init()">
+	<div id="overlay">
+			<div id="title"><h1>streetfighter</h1></div>
+			<div id="footer"><h6>[space] to get started</h6></div>
+	</div>
+
+	<div id="quicklinks"></div>
+
+</body>
+
 </html>
