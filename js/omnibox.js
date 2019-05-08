@@ -9,8 +9,6 @@ tooled for extensibility
 
 TO-DO:
 
-default links for new user
-
 default action - selected until moving through options
 	build out gui component 
 
@@ -19,6 +17,9 @@ default action - selected until moving through options
 
 */
 
+function itemInList(child, parent) {
+	return parent.indexOf(child) == -1 ? false : true;
+}
 
 
 class Omnibox {
@@ -56,39 +57,50 @@ class Omnibox {
 		this.guiParentDiv.id = "omnibox";
 		this.guiParentDiv.style = "display: none";
 
-		this.guiBreadcrumb = document.createElement("div");
-		this.guiBreadcrumb.id = "breadcrumb";
-
 		this.guiInput = document.createElement("input");
 		this.guiInput.id = "omniInput";
+
+		this.guiBreadcrumb = document.createElement("div");
+		this.guiBreadcrumb.id = "breadcrumb";
 		
 		this.searchResultArea = document.createElement("div");
 		this.searchResultArea.id = "omniSearchResults";
 
 		// Create DOM elements
-		this.guiParentDiv.appendChild(this.guiBreadcrumb);
 		this.guiParentDiv.appendChild(this.guiInput);
+		this.guiParentDiv.appendChild(this.guiBreadcrumb);
 		this.guiParentDiv.appendChild(this.searchResultArea);
 		document.body.appendChild(this.guiParentDiv);
 
-		this.loop = function(key = this.KEY_IMAGINARY) {
+		this.openCloseOmnibox = function (hardclose = false) {
+			// open box and advance state
 
-			if (this.stepPointer == this.STEP_POP_BOX) {
-				if (key.keyCode == this.KEY_SPACE) {
-					// open box and advance state
-					if (this.boxState == this.BOX_CLOSED) {
-						key = this.KEY_IMAGINARY;
-						this.boxState = this.BOX_OPEN;
-						this.guiParentDiv.setAttribute("style", "display: block;");
-						this.guiInput.focus();
-						this.stepPointer = this.STEP_ITERATE_MODULES;
-					} else {
-						this.boxState = this.BOX_CLOSED;
-						this.guiParentDiv.setAttribute("style", "display: none;");
-						this.stepPointer = this.STEP_POP_BOX;
-					}
-				}
+			if (hardclose) {
+				// regardless of state, close box and return quietly
+				this.boxState = this.BOX_CLOSED;
+				this.guiParentDiv.setAttribute("style", "display: none;");
+				this.stepPointer = this.STEP_POP_BOX;
+				this.userInputString.clearBuffer();
+				document.querySelector("#menuReminder").innerHTML = "[space] for menu";
+				return;
 			}
+
+			if (this.boxState == this.BOX_CLOSED) {
+				this.boxState = this.BOX_OPEN;
+				this.guiParentDiv.setAttribute("style", "display: block;");
+				this.guiInput.focus();
+				this.stepPointer = this.STEP_ITERATE_MODULES;
+				document.querySelector("#menuReminder").innerHTML = "[ctrl]+[space] to exit";
+				this.step();
+			} else {
+				this.boxState = this.BOX_CLOSED;
+				this.guiParentDiv.setAttribute("style", "display: none;");
+				this.stepPointer = this.STEP_POP_BOX;
+				document.querySelector("#menuReminder").innerHTML = "[space] for menu";
+			}
+		}
+
+		this.step = function (key = this.KEY_IMAGINARY) {
 
 			if (this.stepPointer == this.STEP_ITERATE_MODULES) {
 				// user is either searching a term (default behavior) 
@@ -115,14 +127,16 @@ class Omnibox {
 					this.modResults = this.moduleSearch(inputBuffer);
 				}
 
-				// stick default action at front of list
-				
-				this.modResults.unshift(
-					// TO-DO:
-					// once user prefs implemented, pull default action from prefs
-					// for now, default to google search	
-					this.Modules["Search"]["google"]
-				);
+				// if default action not in list, in on front of list
+				// TO-DO:
+				// once user prefs implemented, pull default action from prefs
+				// for now, default to google search	
+
+				var defaultModule = this.Modules.Search.google;
+
+				if (!itemInList(defaultModule, this.modResults)) {
+					this.modResults.unshift(defaultModule);
+				}
 
 				// Draw module selector
 				// remove old results, if any
@@ -134,10 +148,10 @@ class Omnibox {
 
 				// result 0 is our selected module,
 				// draw in breadcrumb area
-				this.guiBreadcrumb.innerHTML = this.modResults[0].title;
+				this.guiBreadcrumb.innerHTML = ">> " + this.modResults[0].title;
 
 				// make subset of modresults less 0th element
-				var subSetResults = this.modResults.splice(1, this.modResults.length);
+				var subSetResults = this.modResults.slice(1, this.modResults.length);
 				subSetResults.forEach(element => {
 					var sr = document.createElement("div");
 					sr.setAttribute("class", "searchResult");
@@ -163,19 +177,19 @@ class Omnibox {
 
 				if (this.modulePointer < mod.behavior.length) {
 					// pass stringbuffer and stepdone supervisor into selected module
-					mod.behavior[this.modulePointer]( this.userInputString, this.moduleStepDone);
+					mod.behavior[this.modulePointer](this.userInputString, this.moduleStepDone);
 				} else {
 					// we have performed an action, 
 					// reset all counters to closed state
 					// and flush stringbuffer
 				}
-				
+
 			}
 
 			// Debugging info reflects final state
 			console.log("State", this.stepPointer);
 			console.log("Input Buffer", this.userInputString.getBuffer().length, "\"" + this.userInputString.getBuffer() + "\"");
-			console.log("Results", this.modResults);
+			console.log("Search Results", this.modResults == undefined ? 0 : this.modResults.length, this.modResults);
 
 		}
 
@@ -194,29 +208,28 @@ class Omnibox {
 			// iterate all modules and their actions
 			var mod = this.Modules;
 
-			for (var key in mod) { 
-				if (mod.hasOwnProperty(key)) {
-					for (var actionKey in mod[key]) {
-						console.log(actionKey);
-						if (mod[key].hasOwnProperty(actionKey)) {
+			for (var key in mod) { // i 
+				if (mod.hasOwnProperty(key)) { // hate
+					for (var actionKey in mod[key]) { // this 
+						if (mod[key].hasOwnProperty(actionKey)) { // so much 
+
+							var action = mod[key][actionKey];
+
 							// check title and description for search term
-							var title = mod[key][actionKey]["title"].toLowerCase();
-							var shortDesc = mod[key][actionKey]["shortDesc"].toLowerCase();
-							var titleResult = title.indexOf(searchTerm.toLowerCase());
-							var descResult = shortDesc.indexOf(searchTerm.toLowerCase());
+							var lowerTitle = action.title.toLowerCase();
+							var lowerShortDesc = action.shortDesc.toLowerCase();
+							var lowerSearch = searchTerm.toLowerCase();
+
+							var inTitle = itemInList(lowerSearch, lowerTitle);
+							var inDescription = itemInList(lowerSearch, lowerShortDesc);
 
 							// if we find our search text in either the title or description
 							// of the module, add it to the results.
-							var notInList = -1; //for legibility
-							var inEither = titleResult != notInList || descResult != notInList;
 
-							if (inEither) {
-								var mr = mod[key][actionKey];
-
+							if (inTitle || inDescription) {
 								// avoid duplicates
-								if (modResults.indexOf(mr) == -1) {
-									// add module to results
-									modResults.push(mr);
+								if (!itemInList(action, modResults)){
+									modResults.push(action);
 								}
 							}
 						}
@@ -232,15 +245,13 @@ class Omnibox {
 			var modCopy = modList.slice();
 
 			if (direction == this.KEY_ARROW_UP) {
-				// take top member of list and add it to bottom
-				var first = modCopy.shift();
-				modCopy.push(first);
-
-			} else {
 				// take last member of list and add it to the top
 				var last = modCopy.pop();
 				modCopy.unshift(last);
-
+			} else {
+				// take top member of list and add it to bottom
+				var first = modCopy.shift();
+				modCopy.push(first);
 			}
 
 			return modCopy;

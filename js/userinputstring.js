@@ -6,14 +6,8 @@ class UserInputString {
 	Return user input intact for compatibility, also return contents 
 	of string buffer.
 
-	TO-DO:
-
-	BETTER META SCRUBBING
-		still catches F-Keys and some meta keys on Linux
-		sleuth out those keycodes and add them to black list
-
-
-	implement cursor position and provide cursor, somehow
+	Input should be reasonably sanitized by our keyhandler by the 
+	time it gets here
 
 	*/
 
@@ -24,7 +18,6 @@ class UserInputString {
 			if (keyEvent == 9001) {
 				// Catch cases where there has been no key input
 				// or we're choosing to sanitize out key input
-				console.log("hey");
 				return [-1, this.inputString];
 			}
 
@@ -48,6 +41,10 @@ class UserInputString {
         
         this.getBuffer = function() {
             return this.inputString;
-        }
+		}
+		
+		this.clearBuffer = function() {
+			this.inputString = "";
+		}
 	}
 }

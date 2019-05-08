@@ -4,35 +4,47 @@
 <head>
 	<meta charset="utf-8" />
 	<title>streetfighter</title>
-	<link href="https://fonts.googleapis.com/css?family=Aguafina+Script" rel="stylesheet"> 
-	<link rel="stylesheet" href="style.css" />
-	<script language="javascript" src="userinputstring.js"></script>
-	<script language="javascript" src="actions.js"></script>
-	<script language="javascript" src="omnibox.js"></script>
+	<link href="https://fonts.googleapis.com/css?family=Aguafina+Script" rel="stylesheet">
+	<link rel="stylesheet" href="css/style.css" />
+	<script language="javascript" src="js/userinputstring.js"></script>
+	<script language="javascript" src="js/actions.js"></script>
+	<script language="javascript" src="js/omnibox.js"></script>
+	<script language="javascript" src="js/links.js"></script>
+	<script language="javascript" src="js/keyinputhandler.js"></script>
 	<script language="javascript">
 		var ob;
+		var lh;
 
 		function init() {
+
+			// Handle links
+			lh = new LinkHandler();
+			lh.loadLinks();
+			lh.renderLinks();
+
+			// Instantiate omnibox
 			ob = new Omnibox(sfModules);
-			ob.loop();
+			ob.step();
 
-			window.onkeydown = function (keyEvent) {
-				ob.loop(keyEvent);
-				keyEvent.preventDefault();
-			}
+			// Set key event handler
+			window.onkeydown = keyHandler;
+
 		}
-
 	</script>
 </head>
 
 <body onload="init()">
 	<div id="overlay">
-			<div id="title"><h1>streetfighter</h1></div>
-			<div id="footer"><h6>[space] to get started</h6></div>
+		<div id="title">
+			<h1>streetfighter</h1>
+		</div>
+		<div id="footer">
+			<h6 id="menuReminder">[space] for menu</h6>
+			<div id="keyComboInfo"></div>
+		</div>
 	</div>
 
 	<div id="quicklinks"></div>
-
 </body>
 
 </html>
