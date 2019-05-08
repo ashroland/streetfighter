@@ -4,8 +4,14 @@ class LinkHandler {
 
 		this.links = [];
 
-		this.loadLinks = function () {
-			// Check storage for links
+		this.loadLinks = function (tempLinks = 9001) {
+			// 1) Did user provide links as a string?
+			if (tempLinks != 9001) {
+				this.links = JSON.parse(tempLinks);
+				return;
+			}
+
+			// 2) Check storage for links
 			var tempLinks = localStorage.getItem("links");
 
 			// If nothing is stored there, make assumption that
@@ -82,33 +88,52 @@ class LinkHandler {
 			links.push(link_or_list, place);
 		}
 
+		this.renderUnderline = function (key, displayName) {
+			// Find first instance of keyCombo in displayname.
+			// wrap that in a span with class kcUnderline
 
-		this.renderLinks = function() {
+			// get first index of result
+			var searchName = displayName.toLowerCase();
+			var index = searchName.indexOf(key);
+
+			// get surrounding text boundaries
+			// and catch edge cases while we're at it
+			var next = index + 1 >= searchName.length - 1 ? searchName.length : index + 1;
+			var beforeUnderline = (index - 1 == 0 ? displayName.slice(0, 1) : "");
+			var underline = displayName.slice(index, next);
+			var afterUnderline = displayName.slice(next);
+
+			// construct underlined string and return
+			underline = '<span class="kcunderline">' + underline + "</span>";
+			return beforeUnderline + underline + afterUnderline;
+
+		}
+
+		this.renderLinks = function () {
 
 			for (var link of this.links) {
 
-				if (link["isList"] == true) {
-
+				if (link.isList) {
 					// Parent DIV to hold it all
 					var d = document.createElement("div");
-					d.id = "link_" + link["displayName"];
-					d.setAttribute("keyCombo", link["keyCombo"]);
+					d.id = "link_" + link.displayName;
+					d.setAttribute("keyCombo", link.keyCombo);
 					d.setAttribute("class", "quicklink");
-					d.innerHTML = link["displayName"];
+					d.innerHTML = this.renderUnderline(link.keyCombo, link.displayName);
 
 					// UL for easy layout
 					var ul = document.createElement("ul");
 
-					for (var subLink of link["list"]) {
+					for (var subLink of link.list) {
 						// A for hyperlink and keycombo attribute
 						var a = document.createElement("a");
 						a.href = subLink.href;
-						a.setAttribute("keyCombo", subLink["keyCombo"]);
+						a.setAttribute("keyCombo", subLink.keyCombo);
 
 						// LI for display text
 						var li = document.createElement("li");
-						var ldn = subLink["displayName"];
-						li.innerHTML = ldn;
+						var ldn = subLink.displayName;
+						li.innerHTML = this.renderUnderline(subLink.keyCombo, ldn);
 						li.id = "link_" + ldn;
 
 						// Add to DOM
@@ -123,15 +148,11 @@ class LinkHandler {
 					a.href = link.href;
 					a.setAttribute("keyCombo", link.keyCombo);
 
-					console.log(link.keyCombo);
-					console.log(link["keyCombo"]);
-
-
 					// # build container div 
 					var d = document.createElement("div");
-					d.id = "link_" + link["displayName"];
+					d.id = "link_" + link.displayName;
 					d.setAttribute("class", "quicklink");
-					d.innerHTML = link["displayName"];
+					d.innerHTML = this.renderUnderline(link.keyCombo, link.displayName);
 
 					a.appendChild(d);
 					document.getElementById("quicklinks").appendChild(a);
@@ -157,27 +178,32 @@ class LinkHandler {
 			// TODO
 			// refactor for legibility, yikes
 			// 
-			for (var x = 0; x < this.links.length; x++) {
-				if (this.links[x].keyCombo == keyCombo_[0]) {
 
-					var returnLink;
+			// iterate links
+			for (var link of this.links) {
 
-					if (this.links[x].isList == false) {
-						returnLink = this.links[x];
+				var returnLink;
+
+				// if the link's key is the first key of our combo,
+				// continue
+				if (link.keyCombo == keyCombo_[0]) {
+
+					if (link.isList == false) {
+						returnLink = link;
 					}
 					else {
 						//default to top element if no better result found
-						returnLink = this.links[x]["list"][0];
+						returnLink = link.list[0];
 
-						for (var y = 0; y < this.links[x]["list"].length; y++) {
-							if (this.links[x]["list"][y].keyCombo == keyCombo_[1]) {
-								returnLink = this.links[x]["list"][y];
+						for (var sublink of link.list) {
+							if (sublink.keyCombo == keyCombo_[1]) {
+								returnLink = sublink;
 							}
 						}
 					}
 
-					var linkId = "link_" + returnLink.displayName;
-					return [returnLink, document.getElementById(linkId)];
+					var linkId = "#link_" + returnLink.displayName;
+					return [returnLink, document.querySelector(linkId)];
 				}
 			}
 		}
