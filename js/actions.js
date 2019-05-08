@@ -67,11 +67,37 @@ sfModules = {
             "title": "Google Search",
             "shortDesc": "Search Google for phrase",
             "behavior": [
-                function(userInputString) {
+                function (userInputString) {
                     // rewrite url to phrase
                     var url = "https://next.duckduckgo.com/?q=";
                     url = url + userInputString.getBuffer();
                     url = url + " !g";
+                    window.location = url;
+                }
+            ]
+        },
+
+        "googleImage": {
+            "title": "Google Image Search",
+            "shortDesc": "Search Google Images for phrase",
+            "behavior": [
+                function (userInputString) {
+                    var url = "https://next.duckduckgo.com/?q=";
+                    url = url + userInputString.getBuffer();
+                    url = url + " !gi";
+                    window.location = url;
+                }
+            ]
+        },
+
+        "ddg": {
+            "title": "DuckDuckGo Search",
+            "shortDesc": "Search DuckDuckGo for phrase",
+            "behavior": [
+                function (userInputString) {
+                    // rewrite url to phrase
+                    var url = "https://next.duckduckgo.com/?q=";
+                    url = url + userInputString.getBuffer();
                     window.location = url;
                 }
             ]

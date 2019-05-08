@@ -111,12 +111,15 @@ class LinkHandler {
 
 		this.renderLinks = function () {
 
+			// Iterate list of links and create
+			// DOM objects for all of them.
+
 			for (var link of this.links) {
 
 				if (link.isList) {
 					// Parent DIV to hold it all
 					var d = document.createElement("div");
-					d.id = "link_" + link.displayName;
+					d.id = "link_" + this.noSpaces(link.displayName);
 					d.setAttribute("keyCombo", link.keyCombo);
 					d.setAttribute("class", "quicklink");
 					d.innerHTML = this.renderUnderline(link.keyCombo, link.displayName);
@@ -134,7 +137,7 @@ class LinkHandler {
 						var li = document.createElement("li");
 						var ldn = subLink.displayName;
 						li.innerHTML = this.renderUnderline(subLink.keyCombo, ldn);
-						li.id = "link_" + ldn;
+						li.id = d.id + "_" + this.noSpaces(ldn);
 
 						// Add to DOM
 						a.appendChild(li);
@@ -150,7 +153,7 @@ class LinkHandler {
 
 					// # build container div 
 					var d = document.createElement("div");
-					d.id = "link_" + link.displayName;
+					d.id = "link_" + this.noSpaces(link.displayName);
 					d.setAttribute("class", "quicklink");
 					d.innerHTML = this.renderUnderline(link.keyCombo, link.displayName);
 
@@ -173,39 +176,67 @@ class LinkHandler {
 
 
 		this.getCursor = function (keyCombo_) {
-			// search list for key match
-			//
-			// TODO
-			// refactor for legibility, yikes
-			// 
+			// search list for key match. return
+			// the JSON object for the link as well
+			// as a pointer to the DOM object representing it. 
 
 			// iterate links
 			for (var link of this.links) {
 
 				var returnLink;
+				var returnId; 
 
 				// if the link's key is the first key of our combo,
 				// continue
 				if (link.keyCombo == keyCombo_[0]) {
 
 					if (link.isList == false) {
+						// Easy, our link is just link
+						// and the object's UID is link_linkDispNameNoSpaces
+
 						returnLink = link;
+						returnId = "link_" + this.noSpaces(link.displayName);
 					}
 					else {
-						//default to top element if no better result found
+						// automatically select first list item,
+						// these are overwritten later if the keyCombo
+						// is any more specific
+						var parentReturnId = this.noSpaces(link.displayName);
 						returnLink = link.list[0];
-
+						var childReturnId = this.noSpaces(returnLink.displayName);
+						
 						for (var sublink of link.list) {
 							if (sublink.keyCombo == keyCombo_[1]) {
 								returnLink = sublink;
+
+								// Parent set
+								parentReturnId = this.noSpaces(link.displayName);
+								
+								// Child element
+								childReturnId = this.noSpaces(sublink.displayName);
 							}
 						}
+
+						// Assemble UID link_parentIDNoSpace_childIdNoSpace
+						returnId = "link_" + parentReturnId + "_" + childReturnId;
+						console.log(returnId);
 					}
 
-					var linkId = "#link_" + returnLink.displayName;
-					return [returnLink, document.querySelector(linkId)];
+					return [returnLink, document.getElementById(returnId)];
 				}
 			}
+		}
+
+		this.noSpaces = function(string) {
+			var retString = "";
+			for (var x = 0; x < string.length; x++) {
+				var char = string.substr(x, 1); 
+				if (char != " ") {
+					retString += char
+				}
+			}
+
+			return retString;
 		}
 
 		this.renderCursor = function (cursor_) {
@@ -215,6 +246,8 @@ class LinkHandler {
 			for (var x = 0; x < allLinks.length; x++) {
 				allLinks[x].classList.remove("selected");
 			}
+
+			console.log(cursor_);
 
 			if (cursor_ != undefined) {
 				cursor_[1].classList.add("selected");

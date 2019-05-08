@@ -18,10 +18,10 @@ it legible vanilla JS.
 
 ### TO-DO
 
--Default links for new visitor
--More apparent keystroke highlighting
+* X Default links for new visitor
+* More apparent keystroke highlighting
 
--HTML5 Web Storage
+- HTML5 Web Storage
 	- X all Links stored as objects on users' computer
 	- X load / save function 
 	- X interface for making / removing / ordering links
@@ -30,6 +30,6 @@ it legible vanilla JS.
 	- Load from File
 	- Reminder system to back up links
 
--"Omnibox" 
-	- sublimetextlike menu for all user functions
-	- many search engines
+- "Omnibox" 
+	X sublimetextlike menu for all user functions
+	X many search engines

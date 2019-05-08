@@ -84,33 +84,39 @@ LINK AREA AND LINKS
 #quicklinks {
 	/* container */
 	width: 100%;
-	min-height: 85%;
+	min-height: 55%;
 	padding: 10%;
+	columns: 14em;
+	column-gap: 2em;
+	column-rule: 1px dotted rgba(66,66,66,66.6);
+	font-size: 16px;
+	font-family: monospace;
+	color: rgba(255,255,255,66.6%);
 }
+
+#quicklinks a {
+	text-decoration: none;
+	color: rgba(255,255,255,66.6%);
+}
+
 
 .quicklink {
 	/* individual link box */
-	width: 180px;
-	min-height: 180px;
-	float: left;
-	background-color: #CCC;
-	color: #000;
-	font-family: monospace;
-	font-size: 12px;
+	
+
 	margin: 15px;
 	padding: 0px;
 
 }
 
-.quicklink a {
-	text-decoration: none;
-	color: #000;
-}
+
 
 .quicklink h3 {
 	padding: 30px;
 	margin: 0px;
 	text-align: center;
+	text-transform: capitalize;
+	font-size: 12px;
 }
 
 .quicklink ul {
@@ -119,6 +125,11 @@ LINK AREA AND LINKS
 	margin: 0px;
 	padding: 0px;
 	width: 100%;
+
+	-webkit-column-break-inside: avoid; /* Chrome, Safari */
+    page-break-inside: avoid;           /* Theoretically FF 20+ */
+    break-inside: avoid-column;         /* IE 11 */
+    display:table;                      /* Actually FF 20+ */
 }
 
 .quicklink ul li {
