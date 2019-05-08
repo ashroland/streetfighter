@@ -89,6 +89,7 @@ LINK AREA AND LINKS
 	columns: 14em;
 	column-gap: 2em;
 	column-rule: 1px dotted rgba(66,66,66,66.6);
+	column-fill: auto;
 	font-size: 16px;
 	font-family: monospace;
 	color: rgba(255,255,255,66.6%);
@@ -99,6 +100,9 @@ LINK AREA AND LINKS
 	color: rgba(255,255,255,66.6%);
 }
 
+.quicklink .nested {
+	min-height: 140px;
+}
 
 .quicklink {
 	/* individual link box */
@@ -112,9 +116,7 @@ LINK AREA AND LINKS
 
 
 .quicklink h3 {
-	padding: 30px;
-	margin: 0px;
-	text-align: center;
+	text-align: left;
 	text-transform: capitalize;
 	font-size: 12px;
 }

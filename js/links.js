@@ -80,12 +80,10 @@ class LinkHandler {
 
 		}
 
-		this.addToLinks = function (link_or_list, place = -1) {
-			// Not 100% sure this is working the way I think it is
-			// bc I don't think that push() takes 2 arguments like this
-			// TODO
-			// fix this lol
-			links.push(link_or_list, place);
+		this.addToLinks = function (link_or_list, index=-1) {
+			// Put link at specified index or default to end of list.
+			index = index == -1 ? this.links.length : index;
+			this.links.splice(index, 0, link_or_list);
 		}
 
 		this.renderUnderline = function (key, displayName) {
@@ -121,8 +119,8 @@ class LinkHandler {
 					var d = document.createElement("div");
 					d.id = "link_" + this.noSpaces(link.displayName);
 					d.setAttribute("keyCombo", link.keyCombo);
-					d.setAttribute("class", "quicklink");
-					d.innerHTML = this.renderUnderline(link.keyCombo, link.displayName);
+					d.setAttribute("class", "quicklink nested");
+					d.innerHTML = "<h3>" + this.renderUnderline(link.keyCombo, link.displayName) + "</h3>";
 
 					// UL for easy layout
 					var ul = document.createElement("ul");
@@ -164,7 +162,7 @@ class LinkHandler {
 		}
 
 		this.unrenderLinks = function () {
-			ql = document.getElementById("quicklinks");
+			var ql = document.getElementById("quicklinks");
 			for (var x = ql.children.length - 1; x >= 0; x--) { ql.removeChild(ql.children[x]) };
 		}
 

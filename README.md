@@ -18,18 +18,19 @@ it legible vanilla JS.
 
 ### TO-DO
 
-* X Default links for new visitor
-* More apparent keystroke highlighting
+- ✓ Default links for new visitor
+- More apparent keystroke highlighting
 
 - HTML5 Web Storage
-	- X all Links stored as objects on users' computer
-	- X load / save function 
-	- X interface for making / removing / ordering links
+	- ✓ all Links stored as objects on users' computer
+	- ✓ load / save function 
+	- ✓ interface for making / removing / ordering links
 		 - keystrokes for these -- HOLD FOR OMNIBOX
 	- Save to File
 	- Load from File
 	- Reminder system to back up links
 
-- "Omnibox" 
-	X sublimetextlike menu for all user functions
-	X many search engines
+- "Omnibox" - sublimetext-like menu for all user functions
+	- ✓ many search engines
+	- Update behavior
+		- selecting a menu option w arrows clears userinputstring but doesn't clear out search results
