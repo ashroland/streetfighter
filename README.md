@@ -25,12 +25,24 @@ it legible vanilla JS.
 	- ✓ all Links stored as objects on users' computer
 	- ✓ load / save function 
 	- ✓ interface for making / removing / ordering links
-		 - keystrokes for these -- HOLD FOR OMNIBOX
+		- keystrokes for these -- HOLD FOR OMNIBOX
 	- Save to File
+		- ✓ export to base64
+		- trigger download / pop user-selectable area
 	- Load from File
+		- ✓ import from base64
+		- pop fileprompt / user pasteable area
 	- Reminder system to back up links
+		- Field stored in userprefs - "lastBackup":date()
 
 - "Omnibox" - sublimetext-like menu for all user functions
 	- ✓ many search engines
 	- Update behavior
 		- selecting a menu option w arrows clears userinputstring but doesn't clear out search results
+
+- User Prefs
+	- Timer-style link selection on/off
+		- Arrow key navigation
+	- Color schemes
+		- CSS Templating
+

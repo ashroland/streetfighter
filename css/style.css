@@ -13,8 +13,29 @@ html, body {
 
 body {
 	background-color: #333;
+}
+
+#container {
+	width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #333;
+
+	/* Flex for every browser */
+    display: -webkit-box;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
 	display: flex;
-	justify-content: center;
+	
+	/* flex instructions */
+	flex-flow: column wrap;	
+}
+
+/* each row is 100% */
+
+#container > * {
+	flex: 1 100%;
 }
 
 
@@ -29,16 +50,11 @@ header, footer, etc.
 */
 
 
-#overlay {
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 100%;
-	height: 100%;
-}
-
 #title {
-	height: 90%;
+	height: 10%;
+	text-align: center;
+	border-bottom: 1px solid rgba(0,0,0,85%);
+	display: block;
 }
 
 #title h4 {
@@ -63,11 +79,12 @@ header, footer, etc.
 }
 
 #footer {
-	height: 10%;
+	width: 100%;
 	font-size: 14px;
 	font-family: 'Operator Mono Lig', 'Operator Mono', monospace;
 	color: #DFDFDF;
 	text-align:center;
+	display: block;
 
 }
 
@@ -82,43 +99,71 @@ LINK AREA AND LINKS
 
 
 #quicklinks {
+
+	display: inline-block;
+	vertical-align: middle;
+
 	/* container */
-	width: 100%;
-	min-height: 55%;
-	padding: 10%;
-	columns: 14em;
+	max-height: 300px;
+
+	/* columnify w overflow */
+	/* columns: 10em;
 	column-gap: 2em;
 	column-rule: 1px dotted rgba(66,66,66,66.6);
 	column-fill: auto;
+	 */
+	/* style */
 	font-size: 16px;
 	font-family: monospace;
-	color: rgba(255,255,255,66.6%);
+
+	display: flex;
+	flex-direction: column;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: baseline;
+	align-content: center;
 }
 
 #quicklinks a {
+	/* Strip default style */
 	text-decoration: none;
-	color: rgba(255,255,255,66.6%);
 }
 
-.quicklink .nested {
-	min-height: 140px;
+#quicklinks * {
+	max-width: 160px;
 }
+
+
+
+.linkTable, .linkTable ul, .linkTable li, .linkTable ul ul, .linkTable ul ul li {
+	
+	/* 
+	
+	Overwrite default ordered list behavior
+	
+	*/
+	
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+	width: 100%;
+	display: inline-block;
+}
+
 
 .quicklink {
 	/* individual link box */
-	
-
 	margin: 15px;
 	padding: 0px;
 
 }
 
-
-
 .quicklink h3 {
 	text-align: left;
-	text-transform: capitalize;
+	text-transform: uppercase;
+	font-weight: lighter;
 	font-size: 12px;
+	margin-top: 0;
 }
 
 .quicklink ul {
@@ -127,11 +172,6 @@ LINK AREA AND LINKS
 	margin: 0px;
 	padding: 0px;
 	width: 100%;
-
-	-webkit-column-break-inside: avoid; /* Chrome, Safari */
-    page-break-inside: avoid;           /* Theoretically FF 20+ */
-    break-inside: avoid-column;         /* IE 11 */
-    display:table;                      /* Actually FF 20+ */
 }
 
 .quicklink ul li {
@@ -143,9 +183,7 @@ LINK AREA AND LINKS
 
 .kcunderline {
 	text-decoration: underline;
-	/* text-decoration-style: wavy; */
-	text-decoration-color: tomato;
-	color: tomato;
+	font-weight: bold;
 }
 
 
@@ -242,22 +280,81 @@ PRETTY COLORS I INTEND TO USE AT SOME POINT
 
 
 
-.red {
+.red, .red *, .red a:visited{
+	color: hsl(0, 100%,50%);
+}
+
+
+.red .selected, .red .selected * {
 	background-color: hsl(0, 100%,50%);
 }
 
-.orange {
+.red .kcunderline {
+	text-decoration-color: hsl(0, 100%,50%);
+}	
+
+.orange, .orange *, .orange a:visited{
+	color: hsl(20, 100%, 50%);
+}
+
+
+.orange .selected {
 	background-color: hsl(20, 100%, 50%);
 }
 
-.yellow {
+.orange .kcunderline {
+	text-decoration-color: hsl(20, 100%, 50%);
+}	
+
+.yellow, .yellow *, .yellow a:visited {
+	color: hsl(45, 100%, 50%);
+}
+
+
+.yellow .selected {
 	background-color: hsl(45, 100%, 50%);
 }
 
-.green {
+.yellow .kcunderline {
+	text-decoration-color: hsl(45, 100%, 50%);
+}	
+
+.green, .green *, .green a:visited{
+	color: hsl(115, 100%, 50%);
+}
+
+.green .selected {
 	background-color: hsl(135, 100%, 50%);
 }
 
-.selected {
+.green .kcunderline {
+	text-decoration-color: hsl(135, 100%, 50%);
+}	
+
+.blue, .blue *, .blue a:visited *{
+	color: hsl(205, 100%, 50%);
+}
+
+.blue .selected {
+	background-color: hsl(205, 100%, 50%);
+}
+
+.blue .kcunderline {
+	text-decoration-color: hsl(205, 100%, 50%);
+}	
+
+.purple, .purple *, .purple a:visited{
+	color: hsl(270, 100%, 50%);
+}
+
+.purple .selected {
 	background-color: hsl(270, 100%, 50%);
+}
+
+.purple .kcunderline {
+	text-decoration-color: hsl(270, 100%, 50%);
+}	
+
+.selected, .selected *, .selected a:visited {
+	color: #333;
 }

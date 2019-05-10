@@ -82,7 +82,7 @@ function keyHandler(keyEvent) {
                     // if cursor set, go to website
                     if (lh.getCursor(keyCombo) !== undefined) {
                         link = "" + lh.getCursor(keyCombo)[0].href;
-                        window.location = link;
+                        // window.location = link;
                     }
                     // clear keycombo for next query
                     keyCombo = "";

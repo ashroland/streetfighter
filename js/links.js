@@ -55,6 +55,22 @@ class LinkHandler {
 			localStorage.setItem("links", saveLinks);
 		}
 
+		this.exportLinks = function() {
+			// Currently dumps to console
+			// TODO - GUIfy this process
+			// and frankly a UTF-8 JSON object might
+			// be more durable than base64. fwiw
+			return btoa(JSON.stringify(this.links));
+		}
+
+		this.importLinks = function( b64string ) {
+			// Currently expects console interaction
+			// TODO - GUIfy this process
+
+			this.loadLinks( atob(b64string) );
+			this.saveLinks();
+		}
+
 		this.makeLink = function (dName, key, href_) {
 			var newLink = {
 				displayName: dName,
@@ -109,55 +125,70 @@ class LinkHandler {
 
 		this.renderLinks = function () {
 
+			var colorCounter = 0;
+			var colors = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
+
 			// Iterate list of links and create
 			// DOM objects for all of them.
 
 			for (var link of this.links) {
 
 				if (link.isList) {
-					// Parent DIV to hold it all
-					var d = document.createElement("div");
-					d.id = "link_" + this.noSpaces(link.displayName);
-					d.setAttribute("keyCombo", link.keyCombo);
-					d.setAttribute("class", "quicklink nested");
-					d.innerHTML = "<h3>" + this.renderUnderline(link.keyCombo, link.displayName) + "</h3>";
 
-					// UL for easy layout
-					var ul = document.createElement("ul");
+					// Parent TABLE to hold it all
+					var parentUL = document.createElement("ul");
+					parentUL.setAttribute("class","linkTable quicklink " + colors[colorCounter]);
 
-					for (var subLink of link.list) {
+					// category title gets special treatment
+					var titleLI = document.createElement("li");
+
+					titleLI.id = "link_" + this.noSpaces(link.displayName);
+					titleLI.setAttribute("keyCombo", link.keyCombo);
+
+					titleLI.innerHTML = "<h3>" + this.renderUnderline(link.keyCombo, link.displayName) + "</h3>";
+
+					parentUL.appendChild(titleLI);
+
+					var nestedUL = document.createElement("ul");
+
+					for (var sublink of link.list) {
+						// LI for display text
+						var nestedLI = document.createElement("li");
+						nestedLI.id = titleLI.id + "_" + this.noSpaces(sublink.displayName);
+
 						// A for hyperlink and keycombo attribute
 						var a = document.createElement("a");
-						a.href = subLink.href;
-						a.setAttribute("keyCombo", subLink.keyCombo);
-
-						// LI for display text
-						var li = document.createElement("li");
-						var ldn = subLink.displayName;
-						li.innerHTML = this.renderUnderline(subLink.keyCombo, ldn);
-						li.id = d.id + "_" + this.noSpaces(ldn);
+						a.href = sublink.href;
+						a.setAttribute("keyCombo", sublink.keyCombo);
+						a.innerHTML = this.renderUnderline(sublink.keyCombo, sublink.displayName);
+						
 
 						// Add to DOM
-						a.appendChild(li);
-						ul.appendChild(a);
+						nestedLI.appendChild(a);
+						nestedUL.appendChild(nestedLI);
 					}
-					d.appendChild(ul);
-					document.getElementById("quicklinks").appendChild(d);
+
+					parentUL.appendChild(nestedUL);
+
+					document.getElementById("quicklinks").appendChild(parentUL);
 
 				} else {
 					var a = document.createElement("a");
 					a.href = link.href;
 					a.setAttribute("keyCombo", link.keyCombo);
+					a.setAttribute("class", "quicklink " + colors[colorCounter]);
 
 					// # build container div 
 					var d = document.createElement("div");
 					d.id = "link_" + this.noSpaces(link.displayName);
-					d.setAttribute("class", "quicklink");
 					d.innerHTML = this.renderUnderline(link.keyCombo, link.displayName);
 
 					a.appendChild(d);
 					document.getElementById("quicklinks").appendChild(a);
 				}
+
+				colorCounter += 1;
+				colorCounter %= colors.length;
 			}
 		}
 
