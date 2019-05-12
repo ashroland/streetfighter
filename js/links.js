@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 class LinkHandler {
 
 	constructor() {
@@ -12,40 +14,16 @@ class LinkHandler {
 			}
 
 			// 2) Check storage for links
-			var tempLinks = localStorage.getItem("links");
+			tempLinks = localStorage.getItem("links");
 
 			// If nothing is stored there, make assumption that
 			// user is visiting for first time and populate with 
 			// a variety of links
 			if (tempLinks == null) {
-				tempLinks = this.makeDefaultLinks();
-				this.saveLinks(tempLinks);
-				this.loadLinks();
+				lh.importLinks("W3siZGlzcGxheU5hbWUiOiJHb29nbGUiLCJocmVmIjoiaHR0cHM6Ly9nb29nbGUuY29tIiwia2V5Q29tYm8iOiJnIiwiaXNMaXN0IjpmYWxzZX0seyJkaXNwbGF5TmFtZSI6Ik1haWwiLCJrZXlDb21ibyI6Im0iLCJpc0xpc3QiOnRydWUsImxpc3QiOlt7ImRpc3BsYXlOYW1lIjoiR21haWwiLCJocmVmIjoiaHR0cHM6Ly9tYWlsLmdvb2dsZS5jb20iLCJrZXlDb21ibyI6ImciLCJpc0xpc3QiOmZhbHNlfSx7ImRpc3BsYXlOYW1lIjoiWWFob28iLCJocmVmIjoiaHR0cHM6Ly9tYWlsLnlhaG9vLmNvbSIsImtleUNvbWJvIjoieSIsImlzTGlzdCI6ZmFsc2V9XX0seyJkaXNwbGF5TmFtZSI6IlNvY2lhbCIsImtleUNvbWJvIjoicyIsImlzTGlzdCI6dHJ1ZSwibGlzdCI6W3siZGlzcGxheU5hbWUiOiJUd2l0dGVyIiwiaHJlZiI6Imh0dHBzOi8vdHdpdHRlci5jb20iLCJrZXlDb21ibyI6InQiLCJpc0xpc3QiOmZhbHNlfSx7ImRpc3BsYXlOYW1lIjoiRmFjZWJvb2siLCJocmVmIjoiaHR0cHM6Ly9mYWNlYm9vay5jb20iLCJrZXlDb21ibyI6ImYiLCJpc0xpc3QiOmZhbHNlfSx7ImRpc3BsYXlOYW1lIjoiVHVtYmxyIiwiaHJlZiI6Imh0dHBzOi8vdHVtYmxyLmNvbSIsImtleUNvbWJvIjoidSIsImlzTGlzdCI6ZmFsc2V9XX0seyJkaXNwbGF5TmFtZSI6IlRpbWVzdWNrIiwia2V5Q29tYm8iOiJ0IiwiaXNMaXN0Ijp0cnVlLCJsaXN0IjpbeyJkaXNwbGF5TmFtZSI6IkhhY2tlciBOZXdzIiwiaHJlZiI6Imh0dHBzOi8vbmV3cy55Y29tYmluYXRvci5jb20iLCJrZXlDb21ibyI6ImgiLCJpc0xpc3QiOmZhbHNlfSx7ImRpc3BsYXlOYW1lIjoiRGlnZyIsImhyZWYiOiJodHRwczovL2RpZ2cuY29tIiwia2V5Q29tYm8iOiJkIiwiaXNMaXN0IjpmYWxzZX1dfSx7ImRpc3BsYXlOYW1lIjoiU2hvcHBpbmciLCJrZXlDb21ibyI6ImgiLCJpc0xpc3QiOnRydWUsImxpc3QiOlt7ImRpc3BsYXlOYW1lIjoiQW1hem9uIiwiaHJlZiI6Imh0dHBzOi8vYW1hem9uLmNvbSIsImtleUNvbWJvIjoiYSIsImlzTGlzdCI6ZmFsc2V9LHsiZGlzcGxheU5hbWUiOiJlQmF5IiwiaHJlZiI6Imh0dHBzOi8vZWJheS5jb20iLCJrZXlDb21ibyI6ImUiLCJpc0xpc3QiOmZhbHNlfSx7ImRpc3BsYXlOYW1lIjoiQWxpRXhwcmVzcyIsImhyZWYiOiJodHRwczovL2FsaWV4cHJlc3MuY29tIiwia2V5Q29tYm8iOiJsIiwiaXNMaXN0IjpmYWxzZX1dfV0=");
 			} else {
 				this.links = JSON.parse(tempLinks);
 			}
-		}
-
-		this.makeDefaultLinks = function () {
-			// make default links
-
-			var tempLinks = [];
-
-			tempLinks.push(
-				this.makeLink("Google", "g", "https://google.com")
-			);
-			tempLinks.push(
-				this.makeLink("Hacker News", "h", "https://news.ycombinator.com")
-			);
-			tempLinks.push(
-				this.makeList("Social", "s", [
-					this.makeLink("Twitter", "t", "https://twitter.com"),
-					this.makeLink("Facebook", "f", "https://facebook.com"),
-					this.makeLink("Tumblr", "u", "https://tumblr.com")
-				])
-			);
-
-			return tempLinks;
 		}
 
 		this.saveLinks = function (links_ = this.links) {

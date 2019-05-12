@@ -1,11 +1,8 @@
 # streetfighter
 ### keycombo-driven replacement for browsers' default new-tab page
 
----
+Under HEAVY development, most user-friendly features have not been implemented yet so use at your own discretion
 
-## Under HEAVY development, most user-friendly features have not been implemented yet so use at your own discretion
-
----
 
 ### philosophy
 
@@ -19,7 +16,7 @@ it legible vanilla JS.
 ### TO-DO
 
 - ✓ Default links for new visitor
-- More apparent keystroke highlighting
+- ✓ More apparent keystroke highlighting
 
 - HTML5 Web Storage
 	- ✓ all Links stored as objects on users' computer
