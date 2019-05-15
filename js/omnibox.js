@@ -48,9 +48,13 @@ class Omnibox {
 		this.modulePointer = 0; // which step of the module are we on
 		this.moduleStepDone = false; // have we finished everything on module step
 
-		// 
+		
 		this.userInputString = new UserInputString();
 		this.modResults;
+		this.resultsPointer = 0;
+		
+		// 
+		"YXJyb3d1cGFycm93dXBhcnJvd2Rvd25hcnJvd2Rvd25hcnJvd2xlZnRhcnJvd3JpZ2h0YXJyb3dsZWZ0YXJyb3dyaWdodGJh";
 
 		// Build GUI 
 		this.guiParentDiv = document.createElement("div");
