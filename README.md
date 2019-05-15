@@ -30,16 +30,18 @@ it legible vanilla JS.
 		- ✓ import from base64
 		- pop fileprompt / user pasteable area
 	- Reminder system to back up links
-		- Field stored in userprefs - "lastBackup":date()
+		- Field stored in userprefs - {"lastBackup":date()}
 
 - "Omnibox" - sublimetext-like menu for all user functions
 	- ✓ many search engines
 	- Update behavior
 		- selecting a menu option w arrows clears userinputstring but doesn't clear out search results
+	- Modules for common actions: make link, make category, rearrange order, etc.  
 
 - User Prefs
 	- Timer-style link selection on/off
 		- Arrow key navigation
 	- Color schemes
 		- CSS Templating
+	- User-defined keymap for the DVORAK et. al kids
 
