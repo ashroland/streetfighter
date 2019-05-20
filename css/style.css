@@ -256,7 +256,7 @@ OMNIBOX AND SEARCH RESULTS
 	border-bottom: 1px dotted #666;
 }
 
-.searchResult .selected {
+.searchSelected {
 	border-bottom: 1px dotted rgb(11, 209, 183);
 	border-left: 10px solid rgb(11, 209, 183);
 }
@@ -285,7 +285,7 @@ PRETTY COLORS I INTEND TO USE AT SOME POINT
 }
 
 
-.red .selected, .red .selected * {
+.red .linkSelected, .red .linkSelected * {
 	background-color: hsl(0, 100%,50%);
 }
 
@@ -298,7 +298,7 @@ PRETTY COLORS I INTEND TO USE AT SOME POINT
 }
 
 
-.orange .selected {
+.orange .linkSelected {
 	background-color: hsl(20, 100%, 50%);
 }
 
@@ -311,7 +311,7 @@ PRETTY COLORS I INTEND TO USE AT SOME POINT
 }
 
 
-.yellow .selected {
+.yellow .linkSelected{
 	background-color: hsl(45, 100%, 50%);
 }
 
@@ -323,7 +323,7 @@ PRETTY COLORS I INTEND TO USE AT SOME POINT
 	color: hsl(115, 100%, 50%);
 }
 
-.green .selected {
+.green .linkSelected {
 	background-color: hsl(135, 100%, 50%);
 }
 
@@ -335,7 +335,7 @@ PRETTY COLORS I INTEND TO USE AT SOME POINT
 	color: hsl(205, 100%, 50%);
 }
 
-.blue .selected {
+.blue .linkSelected {
 	background-color: hsl(205, 100%, 50%);
 }
 
@@ -347,7 +347,7 @@ PRETTY COLORS I INTEND TO USE AT SOME POINT
 	color: hsl(270, 100%, 70%);
 }
 
-.purple .selected {
+.purple .linkSelected {
 	background-color: hsl(270, 100%, 70%);
 }
 
@@ -355,6 +355,6 @@ PRETTY COLORS I INTEND TO USE AT SOME POINT
 	text-decoration-color: hsl(270, 100%, 70%);
 }	
 
-.selected, .selected *, .selected a:visited {
+.linkSelected, .linkSelected *, .linkSelected a:visited {
 	color: #333;
 }

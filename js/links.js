@@ -248,16 +248,16 @@ class LinkHandler {
 
 		this.renderCursor = function (cursor_) {
 			// clear all previous selections
-			var allLinks = document.getElementsByClassName("selected");
+			var allLinks = document.getElementsByClassName("linkSelected");
 
 			for (var x = 0; x < allLinks.length; x++) {
-				allLinks[x].classList.remove("selected");
+				allLinks[x].classList.remove("linkSelected");
 			}
 
 			console.log(cursor_);
 
 			if (cursor_ != undefined) {
-				cursor_[1].classList.add("selected");
+				cursor_[1].classList.add("linkSelected");
 			}
 
 		}

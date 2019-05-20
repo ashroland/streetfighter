@@ -35,8 +35,11 @@ it legible vanilla JS.
 - "Omnibox" - sublimetext-like menu for all user functions
 	- ✓ many search engines
 	- Update behavior
+		- ✓ Traditional menu for search results, iterable w index pointer
 		- selecting a menu option w arrows clears userinputstring but doesn't clear out search results
 	- Modules for common actions: make link, make category, rearrange order, etc.  
+	- CTRL+(homerow key) as a "quicklaunch" for search terms
+		- Module for selecting / binding modules to quicklaunch keys
 
 - User Prefs
 	- Timer-style link selection on/off

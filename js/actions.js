@@ -1,5 +1,7 @@
 /*jshint esversion: 6 */
 
+var MODULE_SUCCESS = 9000;
+
 sfModules = {
     "Links": {
         "create": {
@@ -17,7 +19,7 @@ sfModules = {
                 },
                 function () {
                     // return something to show that we're done?? idk
-                    return OmniBox.ModuleSuccess;
+                    return MODULE_SUCCESS;
                 }
             ]
         },
@@ -37,7 +39,7 @@ sfModules = {
                 },
                 function () {
                     // return something to show that we're done?? idk
-                    return OmniBox.ModuleSuccess;
+                    return MODULE_SUCCESS;
                 }
             ]
         },
@@ -58,7 +60,7 @@ sfModules = {
                 },
                 function () {
                     // return something to show that we're done?? idk
-                    return OmniBox.ModuleSuccess;
+                    return MODULE_SUCCESS;
                 }
             ]
         },
@@ -76,7 +78,8 @@ sfModules = {
                     url = url + " !g";
                     window.location = url;
                 }
-            ]
+            ],
+            "acceptsInput":true
         },
 
         "googleImage": {
@@ -89,7 +92,8 @@ sfModules = {
                     url = url + " !gi";
                     window.location = url;
                 }
-            ]
+            ],
+            "acceptsInput":true
         },
 
         "ddg": {
@@ -102,7 +106,74 @@ sfModules = {
                     url = url + userInputString.getBuffer();
                     window.location = url;
                 }
+            ],
+            "acceptsInput":true
+        }
+    },
+
+    // Demo behaviors for implementing menu scrolling 
+    // on large result sets
+
+    "Demo": {
+        "aaa": {
+            "title": "aaa",
+            "shortDesc": "demo",
+            "behavior": [ // a sorted list walking through all steps of action
+                function () {
+                    alert("aaa");
+                    return MODULE_SUCCESS;
+                }
+            ]
+        },
+        "bbb": {
+            "title": "bbb",
+            "shortDesc": "demo",
+            "behavior": [ // a sorted list walking through all steps of action
+                function () {
+                    alert("bbb");
+                    return MODULE_SUCCESS;
+                }
+            ]
+        },
+        "ccc": {
+            "title": "ccc",
+            "shortDesc": "demo",
+            "behavior": [ // a sorted list walking through all steps of action
+                function () {
+                    alert("ccc");
+                    return MODULE_SUCCESS;
+                }
+            ]
+        },
+        "ddd": {
+            "title": "ddd",
+            "shortDesc": "demo",
+            "behavior": [ // a sorted list walking through all steps of action
+                function () {
+                    alert("ddd");
+                    return MODULE_SUCCESS;
+                }
+            ]
+        },
+        "eee": {
+            "title": "eee",
+            "shortDesc": "demo",
+            "behavior": [ // a sorted list walking through all steps of action
+                function () {
+                    alert("eee");
+                    return MODULE_SUCCESS;
+                }
+            ]
+        },
+        "fff": {
+            "title": "fff",
+            "shortDesc": "demo",
+            "behavior": [ // a sorted list walking through all steps of action
+                function () {
+                    alert("fff");
+                    return MODULE_SUCCESS;
+                }
             ]
         }
-    }
+    },
 };
