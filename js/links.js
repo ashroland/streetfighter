@@ -91,7 +91,7 @@ class LinkHandler {
 			// get surrounding text boundaries
 			// and catch edge cases while we're at it
 			var next = index + 1 >= searchName.length - 1 ? searchName.length : index + 1;
-			var beforeUnderline = (index - 1 == 0 ? displayName.slice(0, 1) : "");
+			var beforeUnderline = (index > 0 ? displayName.slice(0, index) : "");
 			var underline = displayName.slice(index, next);
 			var afterUnderline = displayName.slice(next);
 

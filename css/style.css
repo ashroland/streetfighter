@@ -331,7 +331,7 @@ PRETTY COLORS I INTEND TO USE AT SOME POINT
 	text-decoration-color: hsl(135, 100%, 50%);
 }	
 
-.blue, .blue *, .blue a:visited *{
+.blue, .blue *, .blue a:visited {
 	color: hsl(205, 100%, 50%);
 }
 
@@ -344,15 +344,15 @@ PRETTY COLORS I INTEND TO USE AT SOME POINT
 }	
 
 .purple, .purple *, .purple a:visited{
-	color: hsl(270, 100%, 50%);
+	color: hsl(270, 100%, 70%);
 }
 
 .purple .selected {
-	background-color: hsl(270, 100%, 50%);
+	background-color: hsl(270, 100%, 70%);
 }
 
 .purple .kcunderline {
-	text-decoration-color: hsl(270, 100%, 50%);
+	text-decoration-color: hsl(270, 100%, 70%);
 }	
 
 .selected, .selected *, .selected a:visited {
