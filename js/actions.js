@@ -77,6 +77,7 @@ sfModules = {
                     url = url + userInputString.getBuffer();
                     url = url + " !g";
                     window.location = url;
+                    return MODULE_SUCCESS;
                 }
             ],
             "acceptsInput":true
@@ -91,6 +92,7 @@ sfModules = {
                     url = url + userInputString.getBuffer();
                     url = url + " !gi";
                     window.location = url;
+                    return MODULE_SUCCESS;
                 }
             ],
             "acceptsInput":true
@@ -105,6 +107,7 @@ sfModules = {
                     var url = "https://next.duckduckgo.com/?q=";
                     url = url + userInputString.getBuffer();
                     window.location = url;
+                    return MODULE_SUCCESS;
                 }
             ],
             "acceptsInput":true

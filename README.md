@@ -48,3 +48,10 @@ it legible vanilla JS.
 		- CSS Templating
 	- User-defined keymap for the DVORAK et. al kids
 
+- Performance enhancements
+	- Cache entire app in HTML5 storage
+		- Look for entry in html5 for app
+			- If not there, request copy and save to html5
+		- Instantiate and run app
+		- Every N days, request new copy from server in bg
+			- Set attributes in all objects to track versions
