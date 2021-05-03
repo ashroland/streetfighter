@@ -46,7 +46,7 @@ it legible vanilla JS.
 		- Arrow key navigation
 	- Color schemes
 		- CSS Templating
-	- User-defined keymap for the DVORAK et. al kids
+	- User-defined keymap for the DVORAK kids, et. al
 
 - Performance enhancements
 	- Cache entire app in HTML5 storage
